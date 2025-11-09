@@ -1,0 +1,106 @@
+{
+  "metadata": {
+    "name": "Llama2 Concurrent 1000 with LoRA",
+    "description": "1000 concurrent requests where 10% (100 requests) use LoRA adapters. 90% use base model.",
+    "created": "2025-11-08",
+    "version": "1.0"
+  },
+  "model": {
+    "path": "./models/Llama2-7b",
+    "name": "Llama2-7b",
+    "dtype": "bfloat16",
+    "max_seq_length": 2048,
+    "tensor_parallel_size": 1
+  },
+  "server": {
+    "port": 8500,
+    "gpu_memory_utilization": 0.92,
+    "max_num_batched_tokens": 16384,
+    "disable_log_requests": true,
+    "timeout": 300
+  },
+  "load_profile": {
+    "num_requests": 1000,
+    "inter_arrival_lambda": 10.0,
+    "seed": 42
+  },
+  "workload": [
+    {
+      "id": "base_qa_1",
+      "description": "Question answering with base model",
+      "messages": [
+        {"role": "system", "content": "You are a helpful assistant that answers questions concisely."},
+        {"role": "user", "content": "What is the capital of France?"}
+      ],
+      "max_tokens": 32,
+      "weight": 0.324,
+      "lora_adapter": null
+    },
+    {
+      "id": "base_qa_2",
+      "description": "Technical question with base model",
+      "messages": [
+        {"role": "system", "content": "You are a helpful assistant that answers questions concisely."},
+        {"role": "user", "content": "Explain how GPU memory works in the context of deep learning."}
+      ],
+      "max_tokens": 64,
+      "weight": 0.216,
+      "lora_adapter": null
+    },
+    {
+      "id": "base_code",
+      "description": "Code review with base model",
+      "messages": [
+        {"role": "system", "content": "You are a code reviewer."},
+        {"role": "user", "content": "Review this Python function:\n\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)"}
+      ],
+      "max_tokens": 48,
+      "weight": 0.162,
+      "lora_adapter": null
+    },
+    {
+      "id": "base_summary",
+      "description": "Summarization with base model",
+      "messages": [
+        {"role": "system", "content": "You are a text summarization assistant."},
+        {"role": "user", "content": "Summarize: GPU profiling is critical for optimizing machine learning workloads. It helps identify bottlenecks in memory utilization and compute throughput."}
+      ],
+      "max_tokens": 40,
+      "weight": 0.108,
+      "lora_adapter": null
+    },
+    {
+      "id": "base_creative",
+      "description": "Creative writing with base model",
+      "messages": [
+        {"role": "system", "content": "You are a creative writer."},
+        {"role": "user", "content": "Write a short haiku about artificial intelligence."}
+      ],
+      "max_tokens": 32,
+      "weight": 0.09,
+      "lora_adapter": null
+    },
+    {
+      "id": "lora_alpaca_instruct",
+      "description": "Instruction following with Alpaca LoRA",
+      "messages": [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Write a Python function that calculates Fibonacci numbers efficiently."}
+      ],
+      "max_tokens": 128,
+      "weight": 0.005,
+      "lora_adapter": "alpaca"
+    },
+    {
+      "id": "lora_llama2chat",
+      "description": "Chat with Llama2 Chat LoRA",
+      "messages": [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Explain the concept of LoRA fine-tuning in simple terms."}
+      ],
+      "max_tokens": 80,
+      "weight": 0.005,
+      "lora_adapter": "llama2chat"
+    }
+  ]
+}

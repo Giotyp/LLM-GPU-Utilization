@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "name": "TinyLlama Heterogeneous Workload",
+    "description": "Mixed tasks with varying input/output sizes mimicking real-world patterns",
+    "created": "2025-11-07",
+    "version": "1.0"
+  },
+  "model": {
+    "path": "./models/TinyLlama-1.1B",
+    "name": "tinyllama-1.1b",
+    "dtype": "bfloat16",
+    "max_seq_length": 2048,
+    "tensor_parallel_size": 1
+  },
+  "server": {
+    "port": 8500,
+    "gpu_memory_utilization": 0.85,
+    "max_num_batched_tokens": 4096,
+    "disable_log_requests": true,
+    "timeout": 120
+  },
+  "load_profile": {
+    "num_requests": 300,
+    "inter_arrival_lambda": 0.5,
+    "seed": 42
+  },
+  "workload": [
+    {
+      "id": "summary",
+      "description": "Write a short summary",
+      "messages": [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Write a short summary of this text.\n\n"}
+      ],
+      "max_tokens": 64,
+      "weight": 0.4
+    },
+    {
+      "id": "explain",
+      "description": "Explain code",
+      "messages": [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Explain the following code snippet in simple terms: def foo(x): return x*x"}
+      ],
+      "max_tokens": 32,
+      "weight": 0.3
+    },
+    {
+      "id": "essay",
+      "description": "Write a paragraph about GPU",
+      "messages": [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Write a thoughtful paragraph about GPU memory management and batching."}
+      ],
+      "max_tokens": 128,
+      "weight": 0.3
+    }
+  ]
+}

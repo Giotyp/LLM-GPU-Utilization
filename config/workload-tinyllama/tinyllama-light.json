@@ -1,0 +1,39 @@
+{
+  "metadata": {
+    "name": "TinyLlama Light Workload",
+    "description": "Light inference load with short tasks and low request rate",
+    "created": "2025-11-07",
+    "version": "1.0"
+  },
+  "model": {
+    "path": "./models/TinyLlama-1.1B",
+    "name": "tinyllama-1.1b",
+    "dtype": "bfloat16",
+    "max_seq_length": 2048,
+    "tensor_parallel_size": 1
+  },
+  "server": {
+    "port": 8500,
+    "gpu_memory_utilization": 0.8,
+    "max_num_batched_tokens": 2048,
+    "disable_log_requests": true,
+    "timeout": 120
+  },
+  "load_profile": {
+    "num_requests": 100,
+    "inter_arrival_lambda": 1.0,
+    "seed": 42
+  },
+  "workload": [
+    {
+      "id": "summary",
+      "description": "Write a short summary",
+      "messages": [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Write a short summary of this text.\n\n"}
+      ],
+      "max_tokens": 64,
+      "weight": 1.0
+    }
+  ]
+}

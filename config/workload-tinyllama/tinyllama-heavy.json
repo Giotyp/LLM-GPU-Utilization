@@ -1,0 +1,39 @@
+{
+  "metadata": {
+    "name": "TinyLlama Heavy Workload",
+    "description": "Heavy inference load with long contexts and high request rate",
+    "created": "2025-11-07",
+    "version": "1.0"
+  },
+  "model": {
+    "path": "./models/TinyLlama-1.1B",
+    "name": "tinyllama-1.1b",
+    "dtype": "bfloat16",
+    "max_seq_length": 2048,
+    "tensor_parallel_size": 1
+  },
+  "server": {
+    "port": 8500,
+    "gpu_memory_utilization": 0.9,
+    "max_num_batched_tokens": 8192,
+    "disable_log_requests": true,
+    "timeout": 120
+  },
+  "load_profile": {
+    "num_requests": 500,
+    "inter_arrival_lambda": 0.2,
+    "seed": 42
+  },
+  "workload": [
+    {
+      "id": "long_essay",
+      "description": "Write a thoughtful long essay",
+      "messages": [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Write a thoughtful paragraph about GPU memory management and batching."}
+      ],
+      "max_tokens": 256,
+      "weight": 1.0
+    }
+  ]
+}
