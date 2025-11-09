@@ -26,6 +26,7 @@ SERVER_PORT=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); prin
 GPU_MEM_UTIL=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['server']['gpu_memory_utilization'])")
 MAX_BATCH=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['server']['max_num_batched_tokens'])")
 WORKLOAD_NAME=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['metadata']['name'].lower().replace(' ', '_'))")
+MAX_CONCURRENCY=1000
 
 # Create results directory
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -89,7 +90,7 @@ GPU_MON_PID=$!
 echo "    GPU Monitor PID: $GPU_MON_PID"
 
 echo "[3/5] Running load generator..."
-python "$DIR_PATH/scripts/load_generator_config.py" "$CONFIG_FILE" "$REQUEST_LOG" \
+python "$DIR_PATH/scripts/load_generator_config.py" "$CONFIG_FILE" "$REQUEST_LOG" "$MAX_CONCURRENCY" \
   > "$LOAD_LOG" 2>&1 || true
 
 echo "[4/5] Stopping background processes..."

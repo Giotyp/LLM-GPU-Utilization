@@ -90,7 +90,9 @@ async def send_request(
     }
 
 
-async def run_load_test(config: Dict[str, Any], output_csv: str):
+async def run_load_test(
+    config: Dict[str, Any], output_csv: str, max_concurrent: int = 128
+):
     """Execute load test with given configuration."""
     model_name = config["model"]["path"]
     server_port = config["server"]["port"]
@@ -105,7 +107,6 @@ async def run_load_test(config: Dict[str, Any], output_csv: str):
 
     print(f"[*] Connecting to server at {server_url}...")
 
-    max_concurrent = 128
     semaphore = asyncio.Semaphore(max_concurrent)
 
     async def send_request_with_semaphore(req, idx):
@@ -151,12 +152,12 @@ async def run_load_test(config: Dict[str, Any], output_csv: str):
 
 
 def main():
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         print(
-            "Usage: python load_generator_config.py <workload-model.json> [output_csv]"
+            "Usage: python load_generator_config.py <workload-model.json> [output_csv] [max_concurrent]"
         )
         print(
-            "Example: python load_generator_config.py config/workload-model/tinyllama-heavy.json results/requests.csv"
+            "Example: python load_generator_config.py config/workload-model/tinyllama-heavy.json results/requests.csv 128"
         )
         sys.exit(1)
 
