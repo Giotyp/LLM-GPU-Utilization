@@ -14,7 +14,7 @@
   },
   "server": {
     "port": 8500,
-    "gpu_memory_utilization": 0.9,
+    "gpu_memory_utilization": 0.8,
     "max_num_batched_tokens": 16384,
     "disable_log_requests": true,
     "timeout": 300
@@ -22,78 +22,80 @@
   "load_profile": {
     "num_requests": 1000,
     "inter_arrival_lambda": 10.0,
-    "seed": 42
+    "seed": 42,
+    "max_concurrent": 1000,
+    "disable_prompt_cache": true
   },
   "workload": [
     {
-      "id": "question_1",
-      "description": "Answer a general knowledge question",
+      "id": "base_qa_1",
+      "description": "Question answering with base model",
       "messages": [
         {"role": "system", "content": "You are a helpful assistant that answers questions concisely."},
         {"role": "user", "content": "What is the capital of France?"}
       ],
-      "max_tokens": 32,
-      "weight": 0.2
+      "max_tokens": 50,
+      "weight": 0.324
     },
     {
-      "id": "question_2",
-      "description": "Answer a technical question",
+      "id": "base_qa_2",
+      "description": "Technical question with base model",
       "messages": [
         {"role": "system", "content": "You are a helpful assistant that answers questions concisely."},
         {"role": "user", "content": "Explain how GPU memory works in the context of deep learning."}
       ],
-      "max_tokens": 64,
-      "weight": 0.15
+      "max_tokens": 500,
+      "weight": 0.216
     },
     {
-      "id": "code_review",
-      "description": "Review a code snippet",
+      "id": "base_code",
+      "description": "Code review with base model",
       "messages": [
         {"role": "system", "content": "You are a code reviewer."},
         {"role": "user", "content": "Review this Python function:\n\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)"}
       ],
-      "max_tokens": 48,
-      "weight": 0.15
+      "max_tokens": 200,
+      "weight": 0.162
     },
     {
-      "id": "summary",
-      "description": "Summarize a text",
+      "id": "base_summary",
+      "description": "Summarization with base model",
       "messages": [
         {"role": "system", "content": "You are a text summarization assistant."},
         {"role": "user", "content": "Summarize: GPU profiling is critical for optimizing machine learning workloads. It helps identify bottlenecks in memory utilization and compute throughput."}
       ],
-      "max_tokens": 40,
-      "weight": 0.15
+      "max_tokens": 150,
+      "weight": 0.108
     },
     {
-      "id": "creative_writing",
-      "description": "Generate creative content",
+      "id": "base_creative",
+      "description": "Creative writing with base model",
       "messages": [
         {"role": "system", "content": "You are a creative writer."},
         {"role": "user", "content": "Write a short haiku about artificial intelligence."}
       ],
-      "max_tokens": 32,
-      "weight": 0.15
+      "max_tokens": 50,
+      "weight": 0.09
     },
     {
-      "id": "list_generation",
-      "description": "Generate a list",
+      "id": "lora_alpaca_instruct",
+      "description": "Instruction following with Alpaca LoRA",
       "messages": [
-        {"role": "system", "content": "You are a helpful assistant that generates lists."},
-        {"role": "user", "content": "List 5 benefits of GPU acceleration in machine learning."}
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Write a Python function that calculates Fibonacci numbers efficiently."}
       ],
-      "max_tokens": 80,
-      "weight": 0.12
+      "max_tokens": 300,
+      "weight": 0.005
     },
     {
-      "id": "explanation",
-      "description": "Explain a concept",
+      "id": "lora_llama2chat",
+      "description": "Chat with Llama2 Chat LoRA",
       "messages": [
-        {"role": "system", "content": "You are an educator."},
-        {"role": "user", "content": "Explain the concept of batching in neural network inference."}
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Explain the concept of LoRA fine-tuning in simple terms."}
       ],
-      "max_tokens": 64,
-      "weight": 0.08
+      "max_tokens": 600,
+      "weight": 0.005
     }
   ]
 }

@@ -10,6 +10,9 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
+# SET GPU DEVICE
+export CUDA_VISIBLE_DEVICES=5
+
 CONFIG_FILE="$1"
 RESULTS_BASE_DIR="${2:-.results}"
 
@@ -26,7 +29,8 @@ SERVER_PORT=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); prin
 GPU_MEM_UTIL=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['server']['gpu_memory_utilization'])")
 MAX_BATCH=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['server']['max_num_batched_tokens'])")
 WORKLOAD_NAME=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['metadata']['name'].lower().replace(' ', '_'))")
-MAX_CONCURRENCY=1000
+DISABLE_PROMPT_CACHE=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['load_profile']['disable_prompt_cache'])")
+MAX_CONCURRENCY=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['load_profile']['max_concurrent'])")
 
 # Create results directory
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -52,6 +56,13 @@ echo "[1/5] Starting vLLM server..."
 # Check if config specifies LoRA adapters
 LORA_ENABLED=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print('true' if any('lora_adapter' in task for task in cfg.get('workload', [])) else 'false')")
 
+if [ "$DISABLE_PROMPT_CACHE" = "True" ]; then 
+    echo "    Prompt caching disabled as per configuration."
+    PROMPT_CACHE_FLAG="--no-enable-prefix-caching"
+else
+    PROMPT_CACHE_FLAG=""
+fi
+
 if [ "$LORA_ENABLED" = "true" ]; then
     echo "    LoRA support detected. Enabling adapters..."
     python -m vllm.entrypoints.openai.api_server \
@@ -60,6 +71,7 @@ if [ "$LORA_ENABLED" = "true" ]; then
       --gpu-memory-utilization $GPU_MEM_UTIL \
       --max-num-batched-tokens $MAX_BATCH \
       --disable-log-requests \
+      $PROMPT_CACHE_FLAG \
       --enable-lora \
       --lora-modules alpaca=$(pwd)/models/lora-adapters/alpaca-lora-7b \
                      llama2chat=$(pwd)/models/lora-adapters/llama2-7b-chat-lora-adaptor \
@@ -75,6 +87,7 @@ else
       --max-num-batched-tokens $MAX_BATCH \
       --max-num-seqs 512 \
       --disable-log-requests \
+        $PROMPT_CACHE_FLAG \
       > "$SERVER_LOG" 2>&1 &
 fi
 

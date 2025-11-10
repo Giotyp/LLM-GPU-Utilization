@@ -14,7 +14,7 @@
   },
   "server": {
     "port": 8500,
-    "gpu_memory_utilization": 0.92,
+    "gpu_memory_utilization": 0.8,
     "max_num_batched_tokens": 16384,
     "disable_log_requests": true,
     "timeout": 300
@@ -22,7 +22,9 @@
   "load_profile": {
     "num_requests": 1000,
     "inter_arrival_lambda": 10.0,
-    "seed": 42
+    "seed": 42,
+    "max_concurrent": 1000,
+    "disable_prompt_cache": true
   },
   "workload": [
     {
@@ -32,9 +34,8 @@
         {"role": "system", "content": "You are a helpful assistant that answers questions concisely."},
         {"role": "user", "content": "What is the capital of France?"}
       ],
-      "max_tokens": 32,
-      "weight": 0.324,
-      "lora_adapter": null
+      "max_tokens": 50,
+      "weight": 0.324
     },
     {
       "id": "base_qa_2",
@@ -43,9 +44,8 @@
         {"role": "system", "content": "You are a helpful assistant that answers questions concisely."},
         {"role": "user", "content": "Explain how GPU memory works in the context of deep learning."}
       ],
-      "max_tokens": 64,
-      "weight": 0.216,
-      "lora_adapter": null
+      "max_tokens": 500,
+      "weight": 0.216
     },
     {
       "id": "base_code",
@@ -54,9 +54,8 @@
         {"role": "system", "content": "You are a code reviewer."},
         {"role": "user", "content": "Review this Python function:\n\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)"}
       ],
-      "max_tokens": 48,
-      "weight": 0.162,
-      "lora_adapter": null
+      "max_tokens": 200,
+      "weight": 0.162
     },
     {
       "id": "base_summary",
@@ -65,9 +64,8 @@
         {"role": "system", "content": "You are a text summarization assistant."},
         {"role": "user", "content": "Summarize: GPU profiling is critical for optimizing machine learning workloads. It helps identify bottlenecks in memory utilization and compute throughput."}
       ],
-      "max_tokens": 40,
-      "weight": 0.108,
-      "lora_adapter": null
+      "max_tokens": 150,
+      "weight": 0.108
     },
     {
       "id": "base_creative",
@@ -76,9 +74,8 @@
         {"role": "system", "content": "You are a creative writer."},
         {"role": "user", "content": "Write a short haiku about artificial intelligence."}
       ],
-      "max_tokens": 32,
-      "weight": 0.09,
-      "lora_adapter": null
+      "max_tokens": 50,
+      "weight": 0.09
     },
     {
       "id": "lora_alpaca_instruct",
@@ -87,7 +84,7 @@
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Write a Python function that calculates Fibonacci numbers efficiently."}
       ],
-      "max_tokens": 128,
+      "max_tokens": 300,
       "weight": 0.005,
       "lora_adapter": "alpaca"
     },
@@ -98,7 +95,7 @@
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Explain the concept of LoRA fine-tuning in simple terms."}
       ],
-      "max_tokens": 80,
+      "max_tokens": 600,
       "weight": 0.005,
       "lora_adapter": "llama2chat"
     }
