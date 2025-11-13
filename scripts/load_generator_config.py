@@ -43,8 +43,8 @@ def generate_workload(config: Dict[str, Any]) -> List[Dict[str, Any]]:
         # Add optional LoRA adapter if specified in task
         if "lora_adapter" in task and task["lora_adapter"]:
             req["lora_adapter"] = task["lora_adapter"]
-            # Add optional LoRA rank if specified in model config
-            if task["lora_rank"]:
+            # Add optional LoRA rank if specified in task
+            if "lora_rank" in task and task["lora_rank"]:
                 req["lora_rank"] = task["lora_rank"]
 
         schedule.append(req)
@@ -63,15 +63,18 @@ async def send_request(
     """Send a single request to the server."""
     t0 = time.time()
     try:
+        # Determine which model/adapter to use
+        model_to_use = model_name
+        if "lora_adapter" in req and req["lora_adapter"]:
+            # Use adapter name as the model field for LoRA requests
+            model_to_use = req["lora_adapter"]
+
         payload = {
-            "model": model_name,
+            "model": model_to_use,
             "messages": req["messages"],
             "max_tokens": req["max_tokens"],
             "temperature": 0.7,
         }
-        # Add optional LoRA adapter if specified in request
-        if "lora_adapter" in req and req["lora_adapter"]:
-            payload["lora_adapter"] = req["lora_adapter"]
 
         async with session.post(server_url, json=payload, timeout=timeout) as r:
             text = await r.text()
