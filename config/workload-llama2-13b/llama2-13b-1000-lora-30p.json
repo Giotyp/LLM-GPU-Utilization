@@ -1,20 +1,20 @@
 {
     "metadata": {
-        "name": "Qwen 1000 - 100% LoRA",
-        "description": "1000 concurrent requests where ALL requests use LoRA adapters. Tests maximum LoRA load on the system. Mix of Qwen LoRA with varied prompts.",
+        "name": "Llama2-13b 1000 - 30% LoRA",
+        "description": "1000 concurrent requests where 30% (300 requests) use LoRA adapter. 70% use base model.",
         "created": "2025-11-13",
         "version": "1.0"
     },
     "model": {
-        "path": "./models/Qwen2.5-3B",
-        "name": "Qwen2.5-3B",
+        "path": "./models/Llama2-13b",
+        "name": "Llama2-13b",
         "dtype": "bfloat16",
         "max_seq_length": 2048,
         "tensor_parallel_size": 1
     },
     "server": {
         "port": 8500,
-        "gpu_memory_utilization": 0.7,
+        "gpu_memory_utilization": 0.9,
         "max_num_batched_tokens": 16384,
         "disable_log_requests": true,
         "timeout": 300
@@ -28,8 +28,8 @@
     },
     "workload": [
         {
-            "id": "lora_qwen_qa_1",
-            "description": "Question answering with Qwen LoRA",
+            "id": "base_qa_1",
+            "description": "Question answering with base model",
             "messages": [
                 {
                     "role": "system",
@@ -41,13 +41,11 @@
                 }
             ],
             "max_tokens": 50,
-            "weight": 0.3,
-            "lora_adapter": "qwen2.5-3b-alpaca",
-            "lora_rank": 16
+            "weight": 0.324
         },
         {
-            "id": "lora_qwen_qa_2",
-            "description": "Technical question with Qwen LoRA",
+            "id": "base_qa_2",
+            "description": "Technical question with base model",
             "messages": [
                 {
                     "role": "system",
@@ -59,13 +57,11 @@
                 }
             ],
             "max_tokens": 500,
-            "weight": 0.2,
-            "lora_adapter": "qwen2.5-3b-alpaca",
-            "lora_rank": 8
+            "weight": 0.216
         },
         {
-            "id": "lora_qwen_code",
-            "description": "Code review with Qwen LoRA",
+            "id": "lora_gpt_code",
+            "description": "Code review with GPT LoRA",
             "messages": [
                 {
                     "role": "system",
@@ -77,13 +73,12 @@
                 }
             ],
             "max_tokens": 200,
-            "weight": 0.15,
-            "lora_adapter": "qwen2.5-3b-alpaca",
-            "lora_rank": 4
+            "weight": 0.162,
+            "lora_adapter": "llama2-13b-gpt-adaptor"
         },
         {
-            "id": "lora_qwen_summary",
-            "description": "Summarization with Qwen LoRA",
+            "id": "base_summary",
+            "description": "Summarization with base model",
             "messages": [
                 {
                     "role": "system",
@@ -95,12 +90,11 @@
                 }
             ],
             "max_tokens": 150,
-            "weight": 0.2,
-            "lora_adapter": "qwen2.5-3b-alpaca"
+            "weight": 0.108
         },
         {
-            "id": "lora_qwen_creative",
-            "description": "Creative writing with Qwen LoRA",
+            "id": "lora_gpt_creative",
+            "description": "Creative writing with GPT LoRA",
             "messages": [
                 {
                     "role": "system",
@@ -112,13 +106,12 @@
                 }
             ],
             "max_tokens": 50,
-            "weight": 0.15,
-            "lora_adapter": "qwen2.5-3b-alpaca",
-            "lora_rank": 32
+            "weight": 0.09,
+            "lora_adapter": "llama2-13b-gpt-adaptor"
         },
         {
-            "id": "lora_qwen_instruct",
-            "description": "Instruction following with Qwen LoRA",
+            "id": "lora_gpt_instruct",
+            "description": "Instruction following with GPT LoRA",
             "messages": [
                 {
                     "role": "system",
@@ -130,12 +123,12 @@
                 }
             ],
             "max_tokens": 300,
-            "weight": 0.005,
-            "lora_adapter": "qwen2.5-3b-alpaca"
+            "weight": 0.048,
+            "lora_adapter": "llama2-13b-gpt-adaptor"
         },
         {
-            "id": "lora_qwen_chat",
-            "description": "Chat with Qwen LoRA",
+            "id": "base_chat",
+            "description": "Chat with base model",
             "messages": [
                 {
                     "role": "system",
@@ -147,8 +140,7 @@
                 }
             ],
             "max_tokens": 600,
-            "weight": 0.005,
-            "lora_adapter": "qwen2.5-3b-alpaca"
+            "weight": 0.005
         }
     ]
 }

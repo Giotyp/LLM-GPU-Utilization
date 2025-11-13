@@ -14,7 +14,7 @@
     },
     "server": {
         "port": 8500,
-        "gpu_memory_utilization": 0.92,
+        "gpu_memory_utilization": 0.9,
         "max_num_batched_tokens": 16384,
         "disable_log_requests": true,
         "timeout": 300
@@ -42,7 +42,7 @@
             ],
             "max_tokens": 50,
             "weight": 0.3,
-            "lora_adapter": "alpaca",
+            "lora_adapter": "alpaca-lora-7b",
             "lora_rank": 16
         },
         {
@@ -60,7 +60,7 @@
             ],
             "max_tokens": 500,
             "weight": 0.2,
-            "lora_adapter": "alpaca",
+            "lora_adapter": "alpaca-lora-7b",
             "lora_rank": 8
         },
         {
@@ -78,7 +78,7 @@
             ],
             "max_tokens": 200,
             "weight": 0.15,
-            "lora_adapter": "alpaca",
+            "lora_adapter": "alpaca-lora-7b",
             "lora_rank": 4
         },
         {
@@ -96,7 +96,7 @@
             ],
             "max_tokens": 150,
             "weight": 0.2,
-            "lora_adapter": "llama2chat"
+            "lora_adapter": "llama2-7b-chat-lora-adaptor"
         },
         {
             "id": "lora_llama2chat_creative",
@@ -113,7 +113,7 @@
             ],
             "max_tokens": 50,
             "weight": 0.15,
-            "lora_adapter": "llama2chat",
+            "lora_adapter": "llama2-7b-chat-lora-adaptor",
             "lora_rank": 32
         },
         {
@@ -131,7 +131,7 @@
             ],
             "max_tokens": 300,
             "weight": 0.005,
-            "lora_adapter": "alpaca"
+            "lora_adapter": "alpaca-lora-7b"
         },
         {
             "id": "lora_llama2chat",
@@ -148,7 +148,7 @@
             ],
             "max_tokens": 600,
             "weight": 0.005,
-            "lora_adapter": "llama2chat"
+            "lora_adapter": "llama2-7b-chat-lora-adaptor"
         }
     ]
 }

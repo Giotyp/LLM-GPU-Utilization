@@ -14,7 +14,7 @@
     },
     "server": {
         "port": 8500,
-        "gpu_memory_utilization": 0.8,
+        "gpu_memory_utilization": 0.7,
         "max_num_batched_tokens": 16384,
         "disable_log_requests": true,
         "timeout": 300

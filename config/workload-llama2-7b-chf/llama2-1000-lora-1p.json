@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "name": "Llama2 1000 - 10% LoRA",
+        "name": "Llama2 1000 - 1% LoRA",
         "description": "1000 concurrent requests where 1% (10 requests) use LoRA adapters. 90% use base model.",
         "created": "2025-11-08",
         "version": "1.0"
@@ -14,7 +14,7 @@
     },
     "server": {
         "port": 8500,
-        "gpu_memory_utilization": 0.92,
+        "gpu_memory_utilization": 0.9,
         "max_num_batched_tokens": 16384,
         "disable_log_requests": true,
         "timeout": 300
@@ -122,7 +122,7 @@
             ],
             "max_tokens": 300,
             "weight": 0.005,
-            "lora_adapter": "alpaca"
+            "lora_adapter": "alpaca-lora-7b"
         },
         {
             "id": "lora_llama2chat",
@@ -139,7 +139,7 @@
             ],
             "max_tokens": 600,
             "weight": 0.005,
-            "lora_adapter": "llama2chat"
+            "lora_adapter": "llama2-7b-chat-lora-adaptor"
         }
     ]
 }
