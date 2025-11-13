@@ -1,0 +1,143 @@
+{
+    "metadata": {
+        "name": "TinyLlama 1000",
+        "description": "1000 concurrent requests with different prompts to test throughput and latency under high load",
+        "created": "2025-11-13",
+        "version": "1.0"
+    },
+    "model": {
+        "path": "./models/TinyLlama-1.1B",
+        "name": "TinyLlama-1.1B",
+        "dtype": "bfloat16",
+        "max_seq_length": 2048,
+        "tensor_parallel_size": 1
+    },
+    "server": {
+        "port": 8500,
+        "gpu_memory_utilization": 0.8,
+        "max_num_batched_tokens": 16384,
+        "disable_log_requests": true,
+        "timeout": 300
+    },
+    "load_profile": {
+        "num_requests": 1000,
+        "inter_arrival_lambda": 10.0,
+        "seed": 42,
+        "max_concurrent": 1000,
+        "disable_prompt_cache": true
+    },
+    "workload": [
+        {
+            "id": "base_qa_1",
+            "description": "Question answering with base model",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant that answers questions concisely."
+                },
+                {
+                    "role": "user",
+                    "content": "What is the capital of France?"
+                }
+            ],
+            "max_tokens": 50,
+            "weight": 0.324
+        },
+        {
+            "id": "base_qa_2",
+            "description": "Technical question with base model",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant that answers questions concisely."
+                },
+                {
+                    "role": "user",
+                    "content": "Explain how GPU memory works in the context of deep learning."
+                }
+            ],
+            "max_tokens": 500,
+            "weight": 0.216
+        },
+        {
+            "id": "base_code",
+            "description": "Code review with base model",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a code reviewer."
+                },
+                {
+                    "role": "user",
+                    "content": "Review this Python function:\n\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)"
+                }
+            ],
+            "max_tokens": 200,
+            "weight": 0.162
+        },
+        {
+            "id": "base_summary",
+            "description": "Summarization with base model",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a text summarization assistant."
+                },
+                {
+                    "role": "user",
+                    "content": "Summarize: GPU profiling is critical for optimizing machine learning workloads. It helps identify bottlenecks in memory utilization and compute throughput."
+                }
+            ],
+            "max_tokens": 150,
+            "weight": 0.108
+        },
+        {
+            "id": "base_creative",
+            "description": "Creative writing with base model",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a creative writer."
+                },
+                {
+                    "role": "user",
+                    "content": "Write a short haiku about artificial intelligence."
+                }
+            ],
+            "max_tokens": 50,
+            "weight": 0.09
+        },
+        {
+            "id": "base_instruct",
+            "description": "Instruction following with base model",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant."
+                },
+                {
+                    "role": "user",
+                    "content": "Write a Python function that calculates Fibonacci numbers efficiently."
+                }
+            ],
+            "max_tokens": 300,
+            "weight": 0.005
+        },
+        {
+            "id": "base_chat",
+            "description": "Chat with TinyLlama",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant."
+                },
+                {
+                    "role": "user",
+                    "content": "Explain the concept of LoRA fine-tuning in simple terms."
+                }
+            ],
+            "max_tokens": 600,
+            "weight": 0.005
+        }
+    ]
+}

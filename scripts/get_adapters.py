@@ -14,6 +14,10 @@ ADAPTERS = {
     "alpaca-lora-7b": "tloen/alpaca-lora-7b",
     "lazylora-7b-chathf": "wuxianchao/lazylora-7b-chathf",
     "llama2-7b-chat-lora-adaptor": "manojpatil/llama-2-7b-chat-lora-adaptor",
+    "llama2-13b-gpt-adaptor": "JadenAI/la-gpt-llama2-13b-lora",
+    "phi3-mini-4k-alpaca": "johnlam90/phi3-mini-4k-instruct-alpaca-lora",
+    "tinyllama-1.1b-alpaca": "sam2ai/tiny_llama_1b_lora_pt",
+    "qwen2.5-3b-alpaca": "TheDenk/Qwen2.5-VL-3B-TrackAnyObject-LoRa-v1",
 }
 
 for name, repo_id in ADAPTERS.items():

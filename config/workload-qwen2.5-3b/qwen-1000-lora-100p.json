@@ -1,0 +1,154 @@
+{
+    "metadata": {
+        "name": "Qwen 1000 - 100% LoRA",
+        "description": "1000 concurrent requests where ALL requests use LoRA adapters. Tests maximum LoRA load on the system. Mix of Qwen LoRA with varied prompts.",
+        "created": "2025-11-13",
+        "version": "1.0"
+    },
+    "model": {
+        "path": "./models/Qwen2.5-3B",
+        "name": "Qwen2.5-3B",
+        "dtype": "bfloat16",
+        "max_seq_length": 2048,
+        "tensor_parallel_size": 1
+    },
+    "server": {
+        "port": 8500,
+        "gpu_memory_utilization": 0.92,
+        "max_num_batched_tokens": 16384,
+        "disable_log_requests": true,
+        "timeout": 300
+    },
+    "load_profile": {
+        "num_requests": 1000,
+        "inter_arrival_lambda": 10.0,
+        "seed": 42,
+        "max_concurrent": 1000,
+        "disable_prompt_cache": true
+    },
+    "workload": [
+        {
+            "id": "lora_qwen_qa_1",
+            "description": "Question answering with Qwen LoRA",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant that answers questions concisely."
+                },
+                {
+                    "role": "user",
+                    "content": "What is the capital of France?"
+                }
+            ],
+            "max_tokens": 50,
+            "weight": 0.3,
+            "lora_adapter": "qwen2.5-3b-alpaca",
+            "lora_rank": 16
+        },
+        {
+            "id": "lora_qwen_qa_2",
+            "description": "Technical question with Qwen LoRA",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant that answers questions concisely."
+                },
+                {
+                    "role": "user",
+                    "content": "Explain how GPU memory works in the context of deep learning."
+                }
+            ],
+            "max_tokens": 500,
+            "weight": 0.2,
+            "lora_adapter": "qwen2.5-3b-alpaca",
+            "lora_rank": 8
+        },
+        {
+            "id": "lora_qwen_code",
+            "description": "Code review with Qwen LoRA",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a code reviewer."
+                },
+                {
+                    "role": "user",
+                    "content": "Review this Python function:\n\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)"
+                }
+            ],
+            "max_tokens": 200,
+            "weight": 0.15,
+            "lora_adapter": "qwen2.5-3b-alpaca",
+            "lora_rank": 4
+        },
+        {
+            "id": "lora_qwen_summary",
+            "description": "Summarization with Qwen LoRA",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a text summarization assistant."
+                },
+                {
+                    "role": "user",
+                    "content": "Summarize: GPU profiling is critical for optimizing machine learning workloads. It helps identify bottlenecks in memory utilization and compute throughput."
+                }
+            ],
+            "max_tokens": 150,
+            "weight": 0.2,
+            "lora_adapter": "qwen2.5-3b-alpaca"
+        },
+        {
+            "id": "lora_qwen_creative",
+            "description": "Creative writing with Qwen LoRA",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a creative writer."
+                },
+                {
+                    "role": "user",
+                    "content": "Write a short haiku about artificial intelligence."
+                }
+            ],
+            "max_tokens": 50,
+            "weight": 0.15,
+            "lora_adapter": "qwen2.5-3b-alpaca",
+            "lora_rank": 32
+        },
+        {
+            "id": "lora_qwen_instruct",
+            "description": "Instruction following with Qwen LoRA",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant."
+                },
+                {
+                    "role": "user",
+                    "content": "Write a Python function that calculates Fibonacci numbers efficiently."
+                }
+            ],
+            "max_tokens": 300,
+            "weight": 0.005,
+            "lora_adapter": "qwen2.5-3b-alpaca"
+        },
+        {
+            "id": "lora_qwen_chat",
+            "description": "Chat with Qwen LoRA",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant."
+                },
+                {
+                    "role": "user",
+                    "content": "Explain the concept of LoRA fine-tuning in simple terms."
+                }
+            ],
+            "max_tokens": 600,
+            "weight": 0.005,
+            "lora_adapter": "qwen2.5-3b-alpaca"
+        }
+    ]
+}

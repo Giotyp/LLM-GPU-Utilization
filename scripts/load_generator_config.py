@@ -43,6 +43,9 @@ def generate_workload(config: Dict[str, Any]) -> List[Dict[str, Any]]:
         # Add optional LoRA adapter if specified in task
         if "lora_adapter" in task and task["lora_adapter"]:
             req["lora_adapter"] = task["lora_adapter"]
+            # Add optional LoRA rank if specified in model config
+            if task["lora_rank"]:
+                req["lora_rank"] = task["lora_rank"]
 
         schedule.append(req)
 
