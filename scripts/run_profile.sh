@@ -38,6 +38,7 @@ fi
 
 # SET GPU DEVICE(S) TO USE
 export CUDA_VISIBLE_DEVICES=5
+echo "Using GPU device(s): $CUDA_VISIBLE_DEVICES"
 
 CONFIG_FILE="$1"
 RESULTS_BASE_DIR="${2:-.results}"
@@ -137,7 +138,7 @@ fi
 
 SERVER_PID=$!
 echo "    Server PID: $SERVER_PID"
-sleep 60  # Allow model to fully initialize and warm up
+sleep 90  # Allow model to fully initialize and warm up
 
 echo "[2/5] Starting GPU monitor..."
 # Monitor each GPU in CUDA_VISIBLE_DEVICES with separate log files
