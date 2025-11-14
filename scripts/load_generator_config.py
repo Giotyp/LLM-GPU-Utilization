@@ -10,6 +10,7 @@ import json
 import random
 import sys
 import csv
+import argparse
 from pathlib import Path
 from typing import Dict, List, Any
 
@@ -77,11 +78,21 @@ async def send_request(
         }
 
         async with session.post(server_url, json=payload, timeout=timeout) as r:
-            text = await r.text()
+            response_json = await r.json()
             status = r.status
+            if status == 200:
+                content = response_json["choices"][0]["message"]["content"]
+                completion_tokens = response_json.get("usage", {}).get(
+                    "completion_tokens", 0
+                )
+                text = content
+            else:
+                text = await r.text()
+                completion_tokens = 0
     except Exception as e:
         text = str(e)
         status = -1
+        completion_tokens = 0
     t1 = time.time()
 
     return {
@@ -92,6 +103,7 @@ async def send_request(
         "latency": t1 - t0,
         "status": status,
         "response_len": len(text),
+        "completion_tokens": completion_tokens,
         "response_snippet": text[:300].replace("\n", " "),
     }
 
@@ -146,6 +158,7 @@ async def run_load_test(
         "latency",
         "status",
         "response_len",
+        "completion_tokens",
         "response_snippet",
     ]
     with open(output_csv, "w", newline="", encoding="utf-8") as f:
@@ -158,17 +171,41 @@ async def run_load_test(
 
 
 def main():
-    if len(sys.argv) < 3:
-        print(
-            "Usage: python load_generator_config.py <workload-model.json> [output_csv] [max_concurrent]"
-        )
+    parser = argparse.ArgumentParser(
+        description="Parametrized load generator that accepts a workload-model config file."
+    )
+    parser.add_argument("config", nargs="?", help="path to workload-model.json")
+    parser.add_argument(
+        "-o",
+        "--output",
+        dest="output",
+        help="output CSV file for request log",
+        default=None,
+    )
+    parser.add_argument(
+        "-m",
+        "--max-concurrent",
+        dest="max_concurrent",
+        help="maximum number of requests to run in parallel",
+        type=int,
+        default=None,
+    )
+
+    args, unknown = parser.parse_known_args()
+
+    # Backwards-compatible fallback to positional args if provided
+    if not args.config and len(sys.argv) >= 2:
+        # sys.argv[0] is script name
+        args.config = sys.argv[1]
+
+    if not args.config:
+        parser.print_usage()
         print(
             "Example: python load_generator_config.py config/workload-model/tinyllama-heavy.json results/requests.csv 128"
         )
         sys.exit(1)
 
-    config_path = sys.argv[1]
-    output_csv = sys.argv[2] if len(sys.argv) > 2 else "request_log.csv"
+    config_path = args.config
 
     config = load_config(config_path)
     print(f"[+] Loaded config: {config['metadata']['name']}")
@@ -176,7 +213,24 @@ def main():
     print(f"    Requests: {config['load_profile']['num_requests']}")
     print()
 
-    asyncio.run(run_load_test(config, output_csv))
+    # Determine output CSV: CLI flag, positional fallback, or default
+    if args.output:
+        output_csv = args.output
+    else:
+        output_csv = sys.argv[2] if len(sys.argv) > 2 else "request_log.csv"
+
+    # Determine max_concurrent: CLI flag, positional fallback, or config/default
+    if args.max_concurrent is not None:
+        max_concurrent = args.max_concurrent
+    elif len(sys.argv) > 3:
+        try:
+            max_concurrent = int(sys.argv[3])
+        except Exception:
+            max_concurrent = config.get("load_profile", {}).get("max_concurrent", 128)
+    else:
+        max_concurrent = config.get("load_profile", {}).get("max_concurrent", 128)
+
+    asyncio.run(run_load_test(config, output_csv, max_concurrent))
 
 
 if __name__ == "__main__":

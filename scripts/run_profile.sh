@@ -57,6 +57,7 @@ GPU_MEM_UTIL=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); pri
 MAX_BATCH=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['server']['max_num_batched_tokens'])")
 WORKLOAD_NAME=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['metadata']['name'].lower().replace(' ', '_'))")
 DISABLE_PROMPT_CACHE=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['load_profile']['disable_prompt_cache'])")
+DISABLE_OPTIMIZATIONS=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['load_profile']['disable_optimizations'])")
 MAX_CONCURRENCY=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['load_profile']['max_concurrent'])")
 
 # Create results directory
@@ -91,6 +92,13 @@ else
     PROMPT_CACHE_FLAG=""
 fi
 
+if [ "$DISABLE_OPTIMIZATIONS" = "True" ]; then
+    echo "    Optimizations disabled as per configuration."
+    DISABLE_OPTS="--disable-custom-all-reduce"
+else 
+    DISABLE_OPTS=""
+fi
+
 if [ "$LORA_ENABLED" = "true" ]; then
     echo "    LoRA support detected. Enabling adapters..."
     # Get unique LoRA adapters from config
@@ -119,9 +127,10 @@ print(' '.join(modules))
       $PROMPT_CACHE_FLAG \
       --enable-lora \
       --lora-modules $LORA_MODULES \
-      --max-loras 2 \
+      --max-loras 3 \
       --max-lora-rank 64 \
-      --max-num-seqs 512 \
+      --max-num-seqs $MAX_CONCURRENCY \
+      $DISABLE_OPTS \
       > "$SERVER_LOG" 2>&1 &
 else
     echo "    Standard mode (no LoRA)."
@@ -130,9 +139,10 @@ else
       --port $SERVER_PORT \
       --gpu-memory-utilization $GPU_MEM_UTIL \
       --max-num-batched-tokens $MAX_BATCH \
-      --max-num-seqs 512 \
+      --max-num-seqs $MAX_CONCURRENCY \
       --disable-log-requests \
         $PROMPT_CACHE_FLAG \
+        $DISABLE_OPTS \
       > "$SERVER_LOG" 2>&1 &
 fi
 
@@ -152,8 +162,9 @@ done
 echo "    GPU Monitor PIDs: ${GPU_MON_PIDS[@]}"
 
 echo "[3/5] Running load generator..."
-python "$DIR_PATH/scripts/load_generator_config.py" "$CONFIG_FILE" "$REQUEST_LOG" "$MAX_CONCURRENCY" \
-  > "$LOAD_LOG" 2>&1 || true
+echo "    Max concurrency: $MAX_CONCURRENCY"
+python "$DIR_PATH/scripts/load_generator_config.py" -o "$REQUEST_LOG" -m "$MAX_CONCURRENCY" "$CONFIG_FILE" \
+    > "$LOAD_LOG" 2>&1 || true
 
 echo "[4/5] Stopping background processes..."
 sleep 2  # Give GPU monitor time to finish
@@ -176,7 +187,14 @@ sleep 1
 echo "[5/5] Collecting summary statistics..."
 
 # Generate summary JSON
-python3 "$DIR_PATH/scripts/generate_summary.py" "$REQUEST_LOG" "$GPU_LOG" "$CONFIG_FILE" "$MODEL_NAME" "$WORKLOAD_NAME" "$TIMESTAMP" "$RESULT_DIR"
+python3 "$DIR_PATH/scripts/generate_summary.py" \
+    -r "$REQUEST_LOG" \
+    -g "$GPU_LOG" \
+    -c "$CONFIG_COPY" \
+    -m "$MODEL_NAME" \
+    -w "$WORKLOAD_NAME" \
+    -t "$TIMESTAMP" \
+    -o "$RESULT_DIR"
 
 echo ""
 echo "=========================================="

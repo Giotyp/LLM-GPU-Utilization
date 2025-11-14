@@ -24,7 +24,8 @@
         "inter_arrival_lambda": 10.0,
         "seed": 42,
         "max_concurrent": 1000,
-        "disable_prompt_cache": true
+        "disable_prompt_cache": true,
+        "disable_optimizations": true
     },
     "workload": [
         {
@@ -37,10 +38,10 @@
                 },
                 {
                     "role": "user",
-                    "content": "What is the capital of France?"
+                    "content": "Write a comprehensive 500-word explanation of the history of artificial intelligence, covering key milestones from the 1950s to present day, major breakthroughs, influential researchers, and current challenges in the field."
                 }
             ],
-            "max_tokens": 50,
+            "max_tokens": 256,
             "weight": 0.324
         },
         {
@@ -53,10 +54,10 @@
                 },
                 {
                     "role": "user",
-                    "content": "Explain how GPU memory works in the context of deep learning."
+                    "content": "Provide a detailed technical explanation of how GPU memory management works in deep learning frameworks, including memory allocation strategies, gradient checkpointing, mixed precision training, and optimization techniques for handling large models."
                 }
             ],
-            "max_tokens": 500,
+            "max_tokens": 256,
             "weight": 0.216
         },
         {
@@ -69,10 +70,10 @@
                 },
                 {
                     "role": "user",
-                    "content": "Review this Python function:\n\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)"
+                    "content": "Perform a comprehensive code review of the following Python implementation of a neural network training loop, analyzing its efficiency, potential bugs, best practices violations, and suggesting detailed improvements for production use."
                 }
             ],
-            "max_tokens": 200,
+            "max_tokens": 256,
             "weight": 0.162
         },
         {
@@ -85,10 +86,10 @@
                 },
                 {
                     "role": "user",
-                    "content": "Summarize: GPU profiling is critical for optimizing machine learning workloads. It helps identify bottlenecks in memory utilization and compute throughput."
+                    "content": "Write a detailed summary of the current state of quantum computing technology, including explanations of quantum bits, superposition, entanglement, current hardware implementations (superconducting, trapped ions, photonic), software stacks, and potential applications in cryptography, optimization, and drug discovery."
                 }
             ],
-            "max_tokens": 150,
+            "max_tokens": 256,
             "weight": 0.108
         },
         {
@@ -101,10 +102,10 @@
                 },
                 {
                     "role": "user",
-                    "content": "Write a short haiku about artificial intelligence."
+                    "content": "Compose a detailed creative story about the future of human-AI collaboration, exploring themes of symbiosis, ethical considerations, technological singularity, and the evolution of consciousness in a world where artificial intelligence becomes indistinguishable from human intelligence."
                 }
             ],
-            "max_tokens": 50,
+            "max_tokens": 256,
             "weight": 0.09
         },
         {
@@ -117,10 +118,10 @@
                 },
                 {
                     "role": "user",
-                    "content": "Write a Python function that calculates Fibonacci numbers efficiently."
+                    "content": "Write a complete Python implementation of a distributed training system for large language models, including data parallelism, model parallelism, gradient synchronization, fault tolerance mechanisms, and performance optimization techniques."
                 }
             ],
-            "max_tokens": 300,
+            "max_tokens": 256,
             "weight": 0.005,
             "lora_adapter": "phi3-mini-4k-alpaca"
         },
@@ -134,10 +135,10 @@
                 },
                 {
                     "role": "user",
-                    "content": "Explain the concept of LoRA fine-tuning in simple terms."
+                    "content": "Explain in detail the concept of LoRA (Low-Rank Adaptation) fine-tuning for large language models, including mathematical foundations, implementation details, computational benefits, memory efficiency advantages, and practical applications in model adaptation and deployment."
                 }
             ],
-            "max_tokens": 600,
+            "max_tokens": 256,
             "weight": 0.005,
             "lora_adapter": "phi3-mini-4k-alpaca"
         }
