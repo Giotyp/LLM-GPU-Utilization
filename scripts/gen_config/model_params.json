@@ -1,0 +1,30 @@
+{
+    "metadata": {
+        "name": "GENERIC MODEL PROFILE",
+        "description": "Replace with specific model/run name after generation.",
+        "created": "2025-11-14",
+        "version": "1.0"
+    },
+    "model": {
+        "path": "./models/ModelName",
+        "name": "ModelName",
+        "dtype": "bfloat16",
+        "max_seq_length": 2048,
+        "tensor_parallel_size": 1
+    },
+    "server": {
+        "port": 8500,
+        "gpu_memory_utilization": 0.9,
+        "max_num_batched_tokens": 16384,
+        "disable_log_requests": true,
+        "timeout": 300
+    },
+    "load_profile": {
+        "num_requests": 1000,
+        "inter_arrival_lambda": 10.0,
+        "seed": 42,
+        "max_concurrent": 128,
+        "disable_prompt_cache": true,
+        "disable_optimizations": true
+    }
+}

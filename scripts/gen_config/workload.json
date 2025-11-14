@@ -1,0 +1,74 @@
+{
+    "workloads": {
+        "summary": {
+            "id": "summary",
+            "description": "Summarization task",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a text summarization assistant."
+                },
+                {
+                    "role": "user",
+                    "content": "Write a detailed summary of the current state of quantum computing technology, including explanations of quantum bits, superposition, entanglement, current hardware implementations (superconducting, trapped ions, photonic), software stacks, and potential applications in cryptography, optimization, and drug discovery."
+                }
+            ]
+        },
+        "code-review": {
+            "id": "code-review",
+            "description": "Code review task",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a code reviewer."
+                },
+                {
+                    "role": "user",
+                    "content": "Perform a comprehensive code review of the following Python implementation of a neural network training loop, analyzing its efficiency, potential bugs, best practices violations, and suggesting detailed improvements for production use."
+                }
+            ]
+        },
+        "qa-technical": {
+            "id": "qa-technical",
+            "description": "Technical question answering",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant that answers questions concisely."
+                },
+                {
+                    "role": "user",
+                    "content": "Provide a detailed technical explanation of how GPU memory management works in deep learning frameworks, including memory allocation strategies, gradient checkpointing, mixed precision training, and optimization techniques for handling large models."
+                }
+            ]
+        },
+        "creative": {
+            "id": "creative",
+            "description": "Creative writing",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a creative writer."
+                },
+                {
+                    "role": "user",
+                    "content": "Compose a detailed creative story about the future of human-AI collaboration, exploring themes of symbiosis, ethical considerations, technological singularity, and the evolution of consciousness in a world where artificial intelligence becomes indistinguishable from human intelligence."
+                }
+            ]
+        },
+        "instruct": {
+            "id": "instruct",
+            "description": "Instruction following task",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant."
+                },
+                {
+                    "role": "user",
+                    "content": "Write a complete Python implementation of a distributed training system for large language models, including data parallelism, model parallelism, gradient synchronization, fault tolerance mechanisms, and performance optimization techniques."
+                }
+            ]
+        }
+    }
+}
