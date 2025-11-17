@@ -49,7 +49,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
 fi
 
 # Parse config
-DIR_PATH="/home/george/gpu_util"
+DIR_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
 MODEL_PATH=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['model']['path'])")
 MODEL_NAME=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['model']['name'])")
 TENSOR_PARALLEL_SIZE=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['model']['tensor_parallel_size'])")
