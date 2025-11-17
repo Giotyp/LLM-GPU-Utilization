@@ -52,6 +52,7 @@ fi
 DIR_PATH="/home/george/gpu_util"
 MODEL_PATH=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['model']['path'])")
 MODEL_NAME=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['model']['name'])")
+TENSOR_PARALLEL_SIZE=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['model']['tensor_parallel_size'])")
 SERVER_PORT=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['server']['port'])")
 GPU_MEM_UTIL=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['server']['gpu_memory_utilization'])")
 MAX_BATCH=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['server']['max_num_batched_tokens'])")
@@ -99,6 +100,8 @@ else
     DISABLE_OPTS=""
 fi
 
+TENSOR_PARALLEL_FLAG="--tensor-parallel-size $TENSOR_PARALLEL_SIZE"
+
 if [ "$LORA_ENABLED" = "true" ]; then
     echo "    LoRA support detected. Enabling adapters..."
     # Get unique LoRA adapters from config
@@ -124,7 +127,8 @@ print(' '.join(modules))
       --gpu-memory-utilization $GPU_MEM_UTIL \
       --max-num-batched-tokens $MAX_BATCH \
       --disable-log-requests \
-      $PROMPT_CACHE_FLAG \
+        $PROMPT_CACHE_FLAG \
+        $TENSOR_PARALLEL_FLAG \
       --enable-lora \
       --lora-modules $LORA_MODULES \
       --max-loras 3 \
@@ -142,6 +146,7 @@ else
       --max-num-seqs $MAX_CONCURRENCY \
       --disable-log-requests \
         $PROMPT_CACHE_FLAG \
+        $TENSOR_PARALLEL_FLAG \
         $DISABLE_OPTS \
       > "$SERVER_LOG" 2>&1 &
 fi
