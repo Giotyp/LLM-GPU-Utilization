@@ -9,7 +9,6 @@ python scripts/gen_config/config_gen.py \
     --model_path ./models/Llama2-7b \
     --max_tokens 256 \
     --messages summary code-review \
-    --config_dir ./config
 
 # With LoRA adapters and 1% LoRA usage
 python scripts/gen_config/config_gen.py \
@@ -18,13 +17,12 @@ python scripts/gen_config/config_gen.py \
     --messages summary code-review qa-technical \
     --lora_perc 0.01 \
     --loras alpaca-lora-7b,llama2-7b-chat-lora-adaptor \
-    --config_dir ./config
 
 This script expects the following template files in the same directory:
  - model_params.json  (contains generic metadata, model, server, load_profile)
  - workload.json      (contains a dictionary of workload message templates)
 
-The generated configuration will be written to: <config_dir>/workload-<model_name>/<model_name>-<num_requests>[-lora-<p>p].json
+The generated configuration will be written to: config/workload-<model_name>/<model_name>-<num_requests>[-lora-<p>p].json
 
 """
 
@@ -267,17 +265,14 @@ def main():
         default="",
         help="Comma-separated list of LoRA adapter names/paths to cycle through",
     )
-    p.add_argument(
-        "--config_dir",
-        type=str,
-        default=str(Path(__file__).parents[1] / "config"),
-        help="Output config directory",
-    )
 
     args = p.parse_args()
 
     messages = _parse_messages_arg(args.messages)
     loras = _parse_list_arg(args.loras)
+
+    fixed_config_dir = str(Path(__file__).parents[1] / "config")
+    Path(fixed_config_dir).mkdir(parents=True, exist_ok=True)
 
     generate_config(
         model_path=args.model_path,
@@ -285,7 +280,7 @@ def main():
         messages=messages,
         lora_perc=args.lora_perc,
         loras=loras,
-        config_dir=args.config_dir,
+        config_dir=fixed_config_dir,
     )
 
 

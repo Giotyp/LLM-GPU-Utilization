@@ -139,8 +139,8 @@ Examples:
   python workflow.py config/workload-model/ --results benchmarks/
       Save results to custom directory
   
-  python workflow.py config/workload-model/ --filter light heavy
-      Only run configs matching 'light' or 'heavy'
+  python workflow.py config/workload-model/ --filter 1p 100p
+      Only run configs matching '1p' or '100p'
 """,
     )
 
