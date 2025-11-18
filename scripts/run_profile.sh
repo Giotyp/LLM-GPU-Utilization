@@ -2,6 +2,11 @@
 # Parametrized Profile Runner
 # Usage: ./run_profile.sh <config.json> [results_dir]
 
+
+# SET GPU DEVICE(S) TO USE
+export CUDA_VISIBLE_DEVICES=0,1
+echo "Using GPU device(s): $CUDA_VISIBLE_DEVICES"
+
 set -euo pipefail
 
 # Cleanup function to ensure processes are killed
@@ -36,10 +41,6 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-# SET GPU DEVICE(S) TO USE
-export CUDA_VISIBLE_DEVICES=5
-echo "Using GPU device(s): $CUDA_VISIBLE_DEVICES"
-
 CONFIG_FILE="$1"
 RESULTS_BASE_DIR="${2:-.results}"
 
@@ -52,6 +53,7 @@ fi
 DIR_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
 MODEL_PATH=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['model']['path'])")
 MODEL_NAME=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['model']['name'])")
+DTYPE=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['model']['dtype'])")
 TENSOR_PARALLEL_SIZE=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['model']['tensor_parallel_size'])")
 SERVER_PORT=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['server']['port'])")
 GPU_MEM_UTIL=$(python3 -c "import json; cfg=json.load(open('$CONFIG_FILE')); print(cfg['server']['gpu_memory_utilization'])")
@@ -126,6 +128,7 @@ print(' '.join(modules))
       --port $SERVER_PORT \
       --gpu-memory-utilization $GPU_MEM_UTIL \
       --max-num-batched-tokens $MAX_BATCH \
+      --dtype $DTYPE \
       --disable-log-requests \
         $PROMPT_CACHE_FLAG \
         $TENSOR_PARALLEL_FLAG \
@@ -143,6 +146,7 @@ else
       --port $SERVER_PORT \
       --gpu-memory-utilization $GPU_MEM_UTIL \
       --max-num-batched-tokens $MAX_BATCH \
+      --dtype $DTYPE \
       --max-num-seqs $MAX_CONCURRENCY \
       --disable-log-requests \
         $PROMPT_CACHE_FLAG \
@@ -153,7 +157,7 @@ fi
 
 SERVER_PID=$!
 echo "    Server PID: $SERVER_PID"
-sleep 90  # Allow model to fully initialize and warm up
+read -p "    Press [Enter] once the server is ready to accept requests..."
 
 echo "[2/5] Starting GPU monitor..."
 # Monitor each GPU in CUDA_VISIBLE_DEVICES with separate log files
