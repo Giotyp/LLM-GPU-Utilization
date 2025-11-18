@@ -36,6 +36,7 @@ frozenlist
 fsspec
 gguf
 h11
+hf-transfer
 hf-xet
 httpcore
 httptools
