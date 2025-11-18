@@ -18,6 +18,12 @@ python scripts/gen_config/config_gen.py \
     --lora_perc 0.01 \
     --loras alpaca-lora-7b,llama2-7b-chat-lora-adaptor \
 
+# Use all messages from workload.json
+python scripts/gen_config/config_gen.py \
+    --model_path ./models/Llama2-7b \
+    --max_tokens 256 \
+    --all \
+
 This script expects the following template files in the same directory:
  - model_params.json  (contains generic metadata, model, server, load_profile)
  - workload.json      (contains a dictionary of workload message templates)
@@ -254,6 +260,11 @@ def main():
         help="List of message ids to include from workload.json (e.g. summary code-review)",
     )
     p.add_argument(
+        "--all",
+        action="store_true",
+        help="Use all messages from workload.json",
+    )
+    p.add_argument(
         "--lora_perc",
         type=float,
         default=0.0,
@@ -268,10 +279,17 @@ def main():
 
     args = p.parse_args()
 
-    messages = _parse_messages_arg(args.messages)
+    if args.all:
+        # Load workload to get all message keys
+        workload_path = HERE / "workload.json"
+        workload_templates = _read_json(workload_path).get("workloads", {})
+        messages = list(workload_templates.keys())
+    else:
+        messages = _parse_messages_arg(args.messages)
+
     loras = _parse_list_arg(args.loras)
 
-    fixed_config_dir = str(Path(__file__).parents[1] / "config")
+    fixed_config_dir = str(Path(__file__).parents[2] / "config")
     Path(fixed_config_dir).mkdir(parents=True, exist_ok=True)
 
     generate_config(
